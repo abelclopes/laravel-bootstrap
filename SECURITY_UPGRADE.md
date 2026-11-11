@@ -22,6 +22,8 @@ A serie 10 foi descartada porque o Composer identificou outros avisos de seguran
 
 `composer validate --strict`, `composer audit --locked` e
 `php vendor/phpunit/phpunit/phpunit` devem passar. Os testes usam SQLite em memoria.
+O bootstrap dos testes gera uma APP_KEY aleatoria em memoria por processo;
+nenhuma chave de teste precisa ser salva no repositorio ou no arquivo .env.
 Os testes do TokenGuard verificam que credenciais nao textuais nunca chegam ao
 UserProvider, evitando depender da coercao de tipos especifica de MySQL/MariaDB.
 Tambem ha cobertura do login, da pagina autenticada e do token Bearer valido.
