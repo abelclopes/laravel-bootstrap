@@ -29,3 +29,26 @@ Tambem ha cobertura do login, da pagina autenticada e do token Bearer valido.
 O alerta do Dependabot so podera ser encerrado automaticamente depois que o
 lockfile corrigido entrar na branch padrao. A protecao do servidor depende da
 implantacao das novas dependencias.
+
+## Testes em Docker
+
+Crie a imagem com PHP 8.2 e instale as dependencias diretamente do lockfile:
+
+```sh
+docker build -f Dockerfile.test -t laravel-bootstrap-security-test .
+docker run --rm laravel-bootstrap-security-test
+```
+
+O comando padrao valida o Composer, executa a auditoria e roda a suite com SQLite.
+Para executar a mesma suite com MySQL 8.4, sem expor portas do banco no host:
+
+```sh
+docker compose -p laravel-bootstrap-security-tests -f compose.test.yaml up --build --abort-on-container-exit --exit-code-from tests
+docker compose -p laravel-bootstrap-security-tests -f compose.test.yaml down --volumes
+```
+
+As credenciais do Compose sao exclusivas do banco descartavel de testes.
+
+Validado em 11/11/2026 com PHP 8.2.35: SQLite e MySQL 8.4 passaram com
+16 testes e 45 assercoes cada. A validacao estrita do Composer passou e a
+auditoria do lockfile nao encontrou avisos de seguranca em ambas as execucoes.

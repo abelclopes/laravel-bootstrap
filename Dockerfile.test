@@ -1,0 +1,14 @@
+FROM php:8.2-cli
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git unzip libonig-dev libsqlite3-dev libxml2-dev libzip-dev \
+    && docker-php-ext-install mbstring pdo_mysql pdo_sqlite dom zip \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+WORKDIR /app
+COPY . .
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
+CMD ["sh", "-c", "composer validate --strict && composer audit --locked && php vendor/phpunit/phpunit/phpunit --no-progress"]
